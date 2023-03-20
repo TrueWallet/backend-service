@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  django:
+    restart: 'unless-stopped'
+    build:
+      context: .
+      dockerfile: ./etc/Dockerfile
+    depends_on:
+      - postgres
+    env_file:
+      - ./.env
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    command: /bin/sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+
+  postgres:
+    image: postgres:15-alpine
+    volumes:
+      - ./docker_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=true_user
+      - POSTGRES_PASSWORD=true_password
+      - POSTGRES_DB=true_db
+    ports:
+      - "5432:5432"

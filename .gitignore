@@ -1,0 +1,6 @@
+.idea
+venv
+.env
+.mypy_cache
+docker_data
+__pycache__

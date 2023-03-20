@@ -1,0 +1,91 @@
+# .pre-commit-config.yaml
+
+exclude: 'docs|node_modules|migrations|terraform|.git|.tox'
+default_stages: [commit]
+fail_fast: true
+
+repos:
+  - repo: local
+    hooks:
+      - id: seed-isort-config
+        name: seed-isort-config
+        stages: [commit]
+        language: system
+        pass_filenames: false
+        entry: seed-isort-config
+        types: [python]
+      - id: removestar
+        name: removestar
+        stages: [commit]
+        language: system
+        entry: removestar -i apps
+        types: [python]
+      - id: isort
+        name: isort
+        stages: [commit]
+        language: system
+        entry: isort
+        types: [python]
+        args: [ "--profile", "black" ]
+      - id: black
+        name: black
+        stages: [commit]
+        language: python
+        entry: black apps
+        types: [python]
+        language_version: python3.11
+        args: [--target-version, py311, --line-length=120]
+      - id: flake8
+        name: flake8
+        stages: [commit]
+        language: system
+        entry: flake8
+        types: [python]
+      - id: pylint
+        name: pylint
+        stages: [commit]
+        language: system
+        entry: pylint apps
+        types: [python]
+      - id: bandit
+        name: bandit
+        stages: [commit]
+        language: system
+        entry: bandit -r apps --ini=.bandit
+        types: [python]
+        pass_filenames: false
+      - id: dodgy
+        name: dodgy
+        stages: [commit]
+        language: system
+        entry: dodgy --ignore-paths=venv
+        types: [python]
+        pass_filenames: false
+      - id: mypy
+        name: mypy
+        stages: [commit]
+        language: system
+        entry: bash -c 'PYTHONPATH="$PYTHONPATH:$PWD" mypy'
+        types: [python]
+        pass_filenames: false
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-docstring-first
+      - id: check-yaml
+      - id: check-toml
+      - id: check-json
+      - id: debug-statements
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: detect-private-key
+      - id: check-added-large-files
+      - id: check-ast
+      - id: check-symlinks
+      - id: forbid-new-submodules
+  - repo: https://github.com/ecugol/pre-commit-hooks-django
+    rev: v0.4.0
+    hooks:
+    - id: check-untracked-migrations
