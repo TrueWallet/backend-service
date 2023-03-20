@@ -1,6 +1,7 @@
 import django_stubs_ext
 
 from .base import *  # noqa
+
 # from .base import env
 
 django_stubs_ext.monkeypatch()
