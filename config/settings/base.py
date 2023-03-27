@@ -1,6 +1,8 @@
 """
 Base settings to build other settings files upon.
 """
+from datetime import timedelta
+
 import environ
 
 ROOT_DIR = environ.Path(__file__) - 3
@@ -37,6 +39,8 @@ THIRD_PARTY_APPS = [
     "rest_framework",
     "corsheaders",
     "drf_spectacular",
+    "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
 ]
 
 LOCAL_APPS = [
@@ -170,10 +174,23 @@ PASSWORD_HASHERS = [
 # -------------------------------------------------------------------------------
 # django-rest-framework - https://www.django-rest-framework.org/api-guide/settings/
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": [],
+    "DEFAULT_AUTHENTICATION_CLASSES": ["rest_framework_simplejwt.authentication.JWTAuthentication"],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
+
+# rest_framework_simplejwt
+ACCESS_TOKEN_LIFETIME_MINUTES = env.int("ACCESS_TOKEN_LIFETIME_MINUTES", default=1)
+REFRESH_TOKEN_LIFETIME_MINUTES = env.int("REFRESH_TOKEN_LIFETIME_MINUTES", default=2)
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=ACCESS_TOKEN_LIFETIME_MINUTES),
+    "REFRESH_TOKEN_LIFETIME": timedelta(hours=REFRESH_TOKEN_LIFETIME_MINUTES),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "UPDATE_LAST_LOGIN": True,
+    "TOKEN_OBTAIN_SERIALIZER": "apps.users.api.serializers.TokenObtainPairSerializer",
+}
+REST_USE_JWT = True
 
 # CORS
 # ------------------------------------------------------------------------------
@@ -181,3 +198,6 @@ CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS")
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
+
+# Telegram bot
+TELEGRAM_BOT_TOKEN = env.str("TELEGRAM_BOT_TOKEN")

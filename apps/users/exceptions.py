@@ -1,0 +1,2 @@
+class TelegramWebAppInvalidData(Exception):
+    pass

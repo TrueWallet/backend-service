@@ -10,6 +10,7 @@ urlpatterns = [
 # API URLS
 urlpatterns += [
     # API base url
+    path("api/v1/auth/", include("apps.users.api.auth_urls", namespace="auth_api")),
     path("api/", include("config.api_router")),
 ]
 
