@@ -22,7 +22,7 @@ endif
 test:
 	@DJANGO_READ_DOT_ENV_FILE=1 python manage.py test $(RUN_ARGS) --settings=config.settings.test
 
-validate:
+linters:
 	@DJANGO_READ_DOT_ENV_FILE=1 pre-commit run --all-files -c .pre-commit-config.yaml
 
 ifeq (makemigrations,$(firstword $(MAKECMDGOALS)))
